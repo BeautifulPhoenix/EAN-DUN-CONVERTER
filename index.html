@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Códigos EAN</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .result-box {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .batch-input {
+            min-height: 150px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Conversor de Códigos EAN</h1>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="conversionTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="single-tab" data-bs-toggle="tab" data-bs-target="#single" type="button" role="tab">Conversión Individual</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batch" type="button" role="tab">Conversión por Lotes</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content mt-3" id="conversionTabsContent">
+                            <div class="tab-pane fade show active" id="single" role="tabpanel">
+                                <form id="singleConversionForm">
+                                    <div class="mb-3">
+                                        <label for="ean13" class="form-label">Código EAN-13</label>
+                                        <input type="text" class="form-control" id="ean13" required pattern="\d{13}" maxlength="13">
+                                        <div class="form-text">Ingrese un código EAN-13 válido (13 dígitos)</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Tipo de Conversión</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="conversionType" id="toEan14" value="ean14" checked>
+                                            <label class="form-check-label" for="toEan14">Convertir a EAN-14</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="conversionType" id="toDun14" value="dun14">
+                                            <label class="form-check-label" for="toDun14">Convertir a DUN-14</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3" id="prefixGroup">
+                                        <label for="prefix" class="form-label">Prefijo (solo para EAN-14)</label>
+                                        <input type="text" class="form-control" id="prefix" pattern="[0-9]" maxlength="1">
+                                        <div class="form-text">Ingrese un dígito (0-9)</div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Convertir</button>
+                                </form>
+
+                                <div id="singleResult" class="result-box d-none">
+                                    <h5>Resultado:</h5>
+                                    <div id="singleResultContent"></div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="batch" role="tabpanel">
+                                <form id="batchConversionForm">
+                                    <div class="mb-3">
+                                        <label for="batchCodes" class="form-label">Códigos EAN-13</label>
+                                        <textarea class="form-control batch-input" id="batchCodes" required placeholder="Ingrese un código EAN-13 por línea"></textarea>
+                                        <div class="form-text">Ingrese cada código EAN-13 en una nueva línea</div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Tipo de Conversión</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="batchConversionType" id="batchToEan14" value="ean14" checked>
+                                            <label class="form-check-label" for="batchToEan14">Convertir a EAN-14</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="batchConversionType" id="batchToDun14" value="dun14">
+                                            <label class="form-check-label" for="batchToDun14">Convertir a DUN-14</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3" id="batchPrefixGroup">
+                                        <label for="batchPrefix" class="form-label">Prefijo (solo para EAN-14)</label>
+                                        <input type="text" class="form-control" id="batchPrefix" pattern="[0-9]" maxlength="1">
+                                        <div class="form-text">Ingrese un dígito (0-9)</div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Convertir Lote</button>
+                                </form>
+
+                                <div id="batchResult" class="result-box d-none">
+                                    <h5>Resultados:</h5>
+                                    <div id="batchResultContent"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Tutorial de Uso</h5>
+                        <div class="tutorial-section">
+                            <h6 class="mt-3">Obtención del código EAN-13:</h6>
+                            <ol class="small">
+                                <li>Acceda a CK-BAAB perfil MGRSTO</li>
+                                <li>Vaya a la sección "Artículos"</li>
+                                <li>Entre en "Generación de Códigos de Barras"</li>
+                                <li>Copie el código EAN-13 generado</li>
+                            </ol>
+
+                            <h6 class="mt-3">Ejemplo de conversión:</h6>
+                            <div class="example-box bg-light p-2 rounded mb-3 small">
+                                <p class="mb-1"><strong>EAN-13 original:</strong><br>8436531230975 (C. AROMA CHORIZO SP141080)</p>
+                                <p class="mb-1"><strong>A EAN-14 (prefijo 1):</strong><br>18436531230972</p>
+                                <p class="mb-0"><strong>A DUN-14:</strong><br>28436531230979</p>
+                            </div>
+
+                            <h6 class="mt-3">Pasos para la conversión:</h6>
+                            <ol class="small">
+                                <li>Pegue el código EAN-13 en el campo correspondiente</li>
+                                <li>Seleccione el tipo de conversión (EAN-14 o DUN-14)</li>
+                                <li>Si elige EAN-14, introduzca el prefijo deseado (0-9)</li>
+                                <li>Haga clic en "Convertir"</li>
+                            </ol>
+
+                            <div class="alert alert-info small mt-3">
+                                <strong>Nota:</strong> Para conversiones múltiples, utilice la pestaña "Conversión por Lotes" e introduzca un código por línea.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
