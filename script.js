@@ -58,6 +58,30 @@ function convertEan13ToDun14(ean13) {
     return dun14WithoutCheck + checkDigit;
 }
 
+function calculateEan128CheckDigit(code) {
+    let total = code[0].charCodeAt(0) - 32;
+    for (let i = 1; i < code.length; i++) {
+        total += i * (code[i].charCodeAt(0) - 32);
+    }
+    return String.fromCharCode((total % 103) + 32);
+}
+
+function convertEan13ToEan128(ean13) {
+    if (!validateEan13(ean13)) {
+        throw new Error("Código EAN-13 inválido");
+    }
+
+    // Format the EAN-128 in a human-readable format
+    const ai = "01";  // Application Identifier for EAN-14
+    const formattedCode = `[START C][FNC1]${ai}${ean13}`;
+    
+    // Calculate check digit for display
+    const checkDigit = calculateEan128CheckDigit(formattedCode);
+    
+    // Return human-readable format
+    return `${formattedCode}${checkDigit}[STOP]`
+}
+
 // UI handling
 document.addEventListener('DOMContentLoaded', function() {
     // Toggle prefix input visibility based on conversion type
@@ -93,6 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isEan14) {
                 const prefix = document.getElementById('prefix').value;
                 result = convertEan13ToEan14(ean13, prefix);
+            } else if (document.getElementById('toEan128').checked) {
+                result = convertEan13ToEan128(ean13);
             } else {
                 result = convertEan13ToDun14(ean13);
             }
@@ -152,6 +178,8 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const result = isEan14 ? 
                     convertEan13ToEan14(code, prefix) : 
+                    document.getElementById('batchToEan128').checked ?
+                    convertEan13ToEan128(code) :
                     convertEan13ToDun14(code);
                 const companyValidation = validateCompanyCode(code);
                 results.push({ 

@@ -57,6 +57,10 @@
                                             <input class="form-check-input" type="radio" name="conversionType" id="toDun14" value="dun14">
                                             <label class="form-check-label" for="toDun14">Convertir a DUN-14</label>
                                         </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="conversionType" id="toEan128" value="ean128">
+                                            <label class="form-check-label" for="toEan128">Convertir a EAN-128</label>
+                                        </div>
                                     </div>
 
                                     <div class="mb-3" id="prefixGroup">
@@ -91,6 +95,10 @@
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="batchConversionType" id="batchToDun14" value="dun14">
                                             <label class="form-check-label" for="batchToDun14">Convertir a DUN-14</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="batchConversionType" id="batchToEan128" value="ean128">
+                                            <label class="form-check-label" for="batchToEan128">Convertir a EAN-128</label>
                                         </div>
                                     </div>
 
@@ -135,13 +143,30 @@
                             <h6 class="mt-3">Pasos para la conversión:</h6>
                             <ol class="small">
                                 <li>Pegue el código EAN-13 en el campo correspondiente</li>
-                                <li>Seleccione el tipo de conversión (EAN-14 o DUN-14)</li>
+                                <li>Seleccione el tipo de conversión (EAN-14, DUN-14 o EAN-128)</li>
                                 <li>Si elige EAN-14, introduzca el prefijo deseado (0-9)</li>
                                 <li>Haga clic en "Convertir"</li>
                             </ol>
 
                             <div class="alert alert-info small mt-3">
                                 <strong>Nota:</strong> Para conversiones múltiples, utilice la pestaña "Conversión por Lotes" e introduzca un código por línea.
+                            </div>
+
+                            <div class="alert alert-secondary small mt-3">
+                                <h6 class="mb-2">Guía de Conversión EAN-128:</h6>
+                                <p class="mb-2">El EAN-128 (o GS1-128) es un estándar de codificación avanzado que incluye:</p>
+                                <ul class="mb-3">
+                                    <li>Carácter de inicio (Code C)</li>
+                                    <li>Marcador FNC1</li>
+                                    <li>Identificador de Aplicación (01)</li>
+                                    <li>Datos del EAN-13</li>
+                                    <li>Dígito de control</li>
+                                    <li>Carácter de parada</li>
+                                </ul>
+                                <strong>Ejemplo:</strong><br>
+                                EAN-13: 8412345678901<br>
+                                EAN-128: [FNC1]0184123456789018
+                                <br><small>(La estructura incluye: Start C + FNC1 + AI(01) + EAN-13 + Check + Stop)</small>
                             </div>
                         </div>
                     </div>
